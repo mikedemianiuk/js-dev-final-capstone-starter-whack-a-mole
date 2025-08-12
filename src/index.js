@@ -1,6 +1,7 @@
 const holes = document.querySelectorAll('.hole');
 const moles = document.querySelectorAll('.mole');
 const startButton = document.querySelector('#start');
+const difficultySelector = document.querySelector('#difficulty');
 // TODO: Add the missing query selectors:
 const score = document.querySelector('#score');
 const timerDisplay = document.querySelector('#timer');
@@ -10,6 +11,46 @@ let timer;
 let lastHole;
 let points = 0;
 let difficulty = "hard";
+
+// Sound effects using Web Audio API
+function playSound(frequency, duration, type = 'sine') {
+  try {
+    const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+    const oscillator = audioContext.createOscillator();
+    const gainNode = audioContext.createGain();
+    
+    oscillator.connect(gainNode);
+    gainNode.connect(audioContext.destination);
+    
+    oscillator.frequency.value = frequency;
+    oscillator.type = type;
+    
+    gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+    gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + duration);
+    
+    oscillator.start(audioContext.currentTime);
+    oscillator.stop(audioContext.currentTime + duration);
+  } catch (error) {
+    console.log('Audio not supported');
+  }
+}
+
+function playWhackSound() {
+  playSound(800, 0.1, 'square');
+  setTimeout(() => playSound(400, 0.1, 'square'), 50);
+}
+
+function playGameStartSound() {
+  playSound(523, 0.2, 'sine'); // C
+  setTimeout(() => playSound(659, 0.2, 'sine'), 100); // E
+  setTimeout(() => playSound(784, 0.3, 'sine'), 200); // G
+}
+
+function playGameOverSound() {
+  playSound(400, 0.3, 'sawtooth');
+  setTimeout(() => playSound(300, 0.3, 'sawtooth'), 150);
+  setTimeout(() => playSound(200, 0.5, 'sawtooth'), 300);
+}
 
 /**
  * Generates a random integer within a range.
@@ -201,6 +242,7 @@ function startTimer() {
 */
 function whack(event) {
   updateScore();
+  playWhackSound();
   return points;
 }
 
@@ -232,8 +274,8 @@ function setDuration(duration) {
 *
 */
 function stopGame(){
-  // stopAudio(song);  //optional
   clearInterval(timer);
+  playGameOverSound();
   return "game stopped";
 }
 
@@ -254,12 +296,20 @@ function stopGame(){
  * Note: Simply uncommenting `setDuration(10);` and `showUp();` is not enough. To make the game work, ensure all necessary functions listed above are called to initialize the score, timer, event listeners, and mole appearances. 
 */
 function startGame(){
+  // Update difficulty from selector
+  difficulty = difficultySelector.value;
   setDuration(10);
+  playGameStartSound();
   showUp();
   return "game started";
 }
 
 startButton.addEventListener("click", startGame);
+
+// Add difficulty selector change event
+difficultySelector.addEventListener('change', function() {
+  difficulty = this.value;
+});
 
 
 // Please do not modify the code below.
