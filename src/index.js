@@ -1,6 +1,7 @@
 const holes = document.querySelectorAll('.hole');
 const moles = document.querySelectorAll('.mole');
 const startButton = document.querySelector('#start');
+const resetButton = document.querySelector('#reset');
 const difficultySelector = document.querySelector('#difficulty');
 // TODO: Add the missing query selectors:
 const score = document.querySelector('#score');
@@ -11,6 +12,8 @@ let timer;
 let lastHole;
 let points = 0;
 let difficulty = "hard";
+let gameRunning = false;
+let allTimeouts = [];
 
 // Sound effects using Web Audio API
 function playSound(frequency, duration, type = 'sine') {
@@ -167,6 +170,7 @@ function showAndHide(hole, delay){
     toggleVisibility(hole);
     gameOver();
   }, delay);
+  allTimeouts.push(timeoutID);
   return timeoutID;
 }
 
@@ -275,6 +279,12 @@ function setDuration(duration) {
 */
 function stopGame(){
   clearInterval(timer);
+  gameRunning = false;
+  // Clear all pending timeouts
+  allTimeouts.forEach(timeoutID => clearTimeout(timeoutID));
+  allTimeouts = [];
+  // Hide all visible moles
+  holes.forEach(hole => hole.classList.remove('show'));
   playGameOverSound();
   return "game stopped";
 }
@@ -296,15 +306,31 @@ function stopGame(){
  * Note: Simply uncommenting `setDuration(10);` and `showUp();` is not enough. To make the game work, ensure all necessary functions listed above are called to initialize the score, timer, event listeners, and mole appearances. 
 */
 function startGame(){
+  if (gameRunning) {
+    stopGame();
+  }
   // Update difficulty from selector
   difficulty = difficultySelector.value;
+  clearScore();
   setDuration(10);
+  setEventListeners();
+  startTimer();
+  gameRunning = true;
   playGameStartSound();
   showUp();
   return "game started";
 }
 
+function resetGame(){
+  stopGame();
+  clearScore();
+  setDuration(10);
+  timerDisplay.textContent = time;
+  return "game reset";
+}
+
 startButton.addEventListener("click", startGame);
+resetButton.addEventListener("click", resetGame);
 
 // Add difficulty selector change event
 difficultySelector.addEventListener('change', function() {
