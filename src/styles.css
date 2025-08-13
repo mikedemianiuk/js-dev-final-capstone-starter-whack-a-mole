@@ -1,32 +1,43 @@
 html {
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background-attachment: fixed;
   box-sizing: border-box;
   min-height: 100vh;
   z-index:0;
-  overflow: hidden;
+  overflow-y: auto;
+  overflow-x: hidden;
   font-family: 'Arial', sans-serif;
+}
+
+body {
+  margin: 0;
+  padding: 20px 20px 50px 20px;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
 }
 
 h1 {
   text-align: center;
-  font-size: 90px;
+  font-size: 60px;
   font-family: 'Impact', 'Arial Black', sans-serif;
   color: #ffff00;
   text-shadow: 3px 3px 0px #ff6b6b, 6px 6px 10px rgba(0,0,0,0.5);
-  margin: 20px 0;
+  margin: 10px 0;
 }
 
 h2 {
   text-align: center;
-  font-size: 40px;
+  font-size: 30px;
   color: #ffffff;
   text-shadow: 2px 2px 4px rgba(0,0,0,0.7);
   font-weight: bold;
+  margin: 10px 0;
 }
 
 .button-container {
     text-align: center;
-    margin: 20px 0;
+    margin: 15px 0;
 }
 
 #start, #reset {
@@ -68,7 +79,7 @@ h2 {
 
 .difficulty-selector {
     text-align: center;
-    margin: 20px 0;
+    margin: 15px 0;
 }
 
 .difficulty-selector label {
@@ -107,7 +118,7 @@ h2 {
   height: 400px;
   display: flex;
   flex-wrap: wrap;
-  margin: 0 auto;
+  margin: 20px auto 50px auto;
   /*cursor: url('./assets/mallet.png'), pointer;*/
 }
 
@@ -163,4 +174,56 @@ h2 {
 
 .hole.show .mole {
   top: -20%;
+}
+
+/* Media queries for responsiveness */
+@media (max-width: 768px) {
+  h1 {
+    font-size: 40px;
+  }
+  
+  h2 {
+    font-size: 24px;
+  }
+  
+  .grid {
+    width: 90%;
+    max-width: 500px;
+    height: 350px;
+  }
+  
+  #start, #reset {
+    padding: 12px 24px;
+    font-size: 24px;
+  }
+  
+  .mole {
+    font-size: 50px;
+  }
+}
+
+@media (max-height: 800px) {
+  body {
+    padding: 10px 20px 30px 20px;
+  }
+  
+  h1 {
+    margin: 5px 0;
+  }
+  
+  h2 {
+    margin: 5px 0;
+  }
+  
+  .button-container {
+    margin: 10px 0;
+  }
+  
+  .difficulty-selector {
+    margin: 10px 0;
+  }
+  
+  .grid {
+    margin: 10px auto 30px auto;
+  }
 }
